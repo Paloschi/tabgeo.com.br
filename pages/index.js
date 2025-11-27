@@ -1,5 +1,5 @@
 function Home(){
-    return <h1>Djeice, eu amo você. Se você me ama, dá uma risadinha! 😎</h1>
+    return <h1>Djeice, você é a rosa 🌹 que eu plantei e virou uma linda roseira, me dando outras rosinhas 🌹🌹🌹</h1>
 }
 
 export default Home;
