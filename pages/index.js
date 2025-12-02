@@ -1,19 +1,13 @@
 function Home() {
   return (
-    <div style={{ padding: "20px" }}>
+    <div style={{ padding: "20px", textAlign: "center" }}>
       <p style={{ fontSize: "1.5rem", lineHeight: "1.6" }}>
-        Djeice, você é a rosa 🌹 que eu plantei e que virou uma linda roseira,
-        me presenteando com outras rosinhas 🌹🌹🌹
+        Estamos neste exato momento construindo um novo local na internet para
+        quem trabalha com geotecnologia e precisa consumir conteúdos com valor
+        concreto!
       </p>
     </div>
   );
 }
 
-function teste() {
-  console.log("Teste function called");
-}
-
-function test2() {
-  console.log("Teste identação errada");
-}
 export default Home;
