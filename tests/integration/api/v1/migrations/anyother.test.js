@@ -11,7 +11,6 @@ describe("ANY OTHER METHOD /api/v1/migrations", () => {
       const othermethods = ["PUT", "DELETE", "OPTIONS", "PATCH"];
 
       for (const method of othermethods) {
-        console.log("method: ", method);
         const response = await fetch(
           "http://localhost:3000/api/v1/migrations",
           {

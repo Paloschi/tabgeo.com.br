@@ -3,6 +3,8 @@ import database from "infra/database.js";
 import webserver from "infra/webserver.js";
 import { NotFoundError } from "infra/errors.js";
 import user from "models/user.js";
+import authorization from "models/authorization.js";
+import { ForbiddenError } from "infra/errors.js";
 
 const EXPIRATION_IN_MILLISECONDS = 1000 * 60 * 15; // 15 minutes
 
@@ -94,7 +96,20 @@ async function markTokenAsUsed(activationTokenId) {
 }
 
 async function activateUserByUserId(userId) {
-  const activatedUser = await user.setFeatures(userId, ["create:session"]);
+  const userToActivate = await user.findOneById(userId);
+
+  if (!authorization.can(userToActivate, "read:activation_token")) {
+    throw new ForbiddenError({
+      message: "You are not authorized to activate the user.",
+      action: "contact the support if you think this is an error.",
+    });
+  }
+
+  const activatedUser = await user.setFeatures(userId, [
+    "create:session",
+    "read:session",
+  ]);
+
   return activatedUser;
 }
 
@@ -104,6 +119,7 @@ const activation = {
   sendEmailToUser,
   markTokenAsUsed,
   activateUserByUserId,
+  EXPIRATION_IN_MILLISECONDS,
 };
 
 export default activation;

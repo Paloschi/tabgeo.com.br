@@ -5,16 +5,15 @@ import session from "models/session.js";
 
 const router = createRouter();
 
-router.get(getHandler);
+router.use(controller.injectAnonymousOrUser);
+router.get(controller.canRequest("read:session"), getHandler);
 
 export default router.handler(controller.errorHandlers);
 
 async function getHandler(request, response) {
   const sessionToken = request.cookies.session_id;
   const sessionObject = await session.findOneValidByToken(sessionToken);
-  console.log("Controller Session object:", sessionObject);
   const renewedSessionObject = await session.renew(sessionObject.id);
-  console.log("Controller Renewed session object:", renewedSessionObject);
   const userFound = await user.findOneById(sessionObject.user_id);
 
   await controller.setSessionCookie(renewedSessionObject.token, response);
