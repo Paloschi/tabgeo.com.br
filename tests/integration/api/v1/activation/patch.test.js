@@ -37,7 +37,8 @@ describe("PATCH /api/v1/activations/[token_id]", () => {
       });
 
       const createdUser = await orchestrator.createUser();
-      const expiredActivationObject = await orchestrator.activateUser(createdUser);
+      const expiredActivationObject =
+        await orchestrator.activateUser(createdUser);
 
       jest.useRealTimers();
 
@@ -61,8 +62,6 @@ describe("PATCH /api/v1/activations/[token_id]", () => {
         action: "verify if the token is correct.",
         statusCode: 404,
       });
-
-
     });
 
     test("With already used token", async () => {
@@ -95,7 +94,6 @@ describe("PATCH /api/v1/activations/[token_id]", () => {
         action: "verify if the token is correct.",
         statusCode: 404,
       });
-
     });
 
     test("With valid token", async () => {
@@ -143,7 +141,8 @@ describe("PATCH /api/v1/activations/[token_id]", () => {
       const activatedUser = await user.findOneById(activationToken.user_id);
       expect(activatedUser.features).toEqual([
         "create:session",
-        "read:session"
+        "read:session",
+        "update:user",
       ]);
     });
 
@@ -198,7 +197,8 @@ describe("PATCH /api/v1/activations/[token_id]", () => {
       expect(responseBody).toEqual({
         name: "ForbiddenError",
         message: "You are not authorized to request this resource.",
-        action: "verify if your user has the required feature read:activation_token.",
+        action:
+          "verify if your user has the required feature read:activation_token.",
         statusCode: 403,
       });
     });
