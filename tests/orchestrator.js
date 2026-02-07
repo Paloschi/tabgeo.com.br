@@ -99,6 +99,10 @@ function extractUUID(text) {
   return match ? match[0] : null;
 }
 
+async function addFeatureToUser(userObject, features) {
+  return await user.addFeaturesByUserId(userObject.id, features);
+}
+
 const orchestrator = {
   waitForAllServices,
   clearDatabase,
@@ -109,6 +113,7 @@ const orchestrator = {
   getLastEmail,
   extractUUID,
   activateUser,
+  addFeatureToUser,
 };
 
 export default orchestrator;
