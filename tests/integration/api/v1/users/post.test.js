@@ -11,7 +11,7 @@ beforeAll(async () => {
 
 describe("POST /api/v1/users", () => {
   describe("Anonymous user", () => {
-    test("With unic and valid data", async () => {
+    test("With unique and valid data", async () => {
       const response = await fetch("http://localhost:3000/api/v1/users", {
         method: "POST",
         headers: {
@@ -19,8 +19,8 @@ describe("POST /api/v1/users", () => {
         },
         body: JSON.stringify({
           username: "rennanpaloschi",
-          email: "contato@tabgeo.com.br",
           password: "senha123",
+          email: "contato@tabgeo.com.br",
         }),
       });
 
@@ -31,7 +31,6 @@ describe("POST /api/v1/users", () => {
       expect(responseBody).toEqual({
         id: responseBody.id,
         username: "rennanpaloschi",
-        email: "contato@tabgeo.com.br",
         features: ["read:activation_token"],
         password: responseBody.password,
         created_at: responseBody.created_at,

@@ -38,9 +38,7 @@ describe("Use case: Registration Flow (all succcessful)", () => {
     expect(createUserResponseBody).toEqual({
       id: createUserResponseBody.id,
       username: "RegistrationFlow",
-      email: "registration.flow@tabgeo.com.br",
       features: ["read:activation_token"],
-      password: createUserResponseBody.password,
       created_at: createUserResponseBody.created_at,
       updated_at: createUserResponseBody.updated_at,
     });
@@ -99,7 +97,7 @@ describe("Use case: Registration Flow (all succcessful)", () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: createUserResponseBody.email,
+          email: "registration.flow@tabgeo.com.br",
           password: "senha123",
         }),
       },
@@ -113,6 +111,8 @@ describe("Use case: Registration Flow (all succcessful)", () => {
   });
 
   test("Get user information", async () => {
+    const userFromDb = await user.findOneById(createUserResponseBody.id);
+
     const getUserResponse = await fetch("http://localhost:3000/api/v1/user", {
       headers: {
         Cookie: `session_id=${createSessionsResponseBody.token}`,
@@ -121,6 +121,15 @@ describe("Use case: Registration Flow (all succcessful)", () => {
 
     expect(getUserResponse.status).toBe(200);
 
-    expect(createUserResponseBody.id).toBe(createUserResponseBody.id);
+    const getUserResponseBody = await getUserResponse.json();
+
+    expect(getUserResponseBody).toEqual({
+      id: createUserResponseBody.id,
+      username: "RegistrationFlow",
+      email: "registration.flow@tabgeo.com.br",
+      features: ["create:session", "read:session", "update:user"],
+      created_at: userFromDb.created_at.toISOString(),
+      updated_at: userFromDb.updated_at.toISOString(),
+    });
   });
 });
