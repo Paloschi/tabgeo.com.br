@@ -9,12 +9,9 @@ beforeAll(async () => {
 describe("POST /api/v1/migrations", () => {
   describe("Anonymous user", () => {
     test("Running pending migrations", async () => {
-      const response = await fetch(
-        "http://localhost:3000/api/v1/migrations",
-        {
-          method: "POST",
-        },
-      );
+      const response = await fetch("http://localhost:3000/api/v1/migrations", {
+        method: "POST",
+      });
       expect(response.status).toBe(403);
 
       const responseBody = await response.json();
@@ -30,12 +27,9 @@ describe("POST /api/v1/migrations", () => {
 
   describe("Default user", () => {
     test("Running pending migrations", async () => {
-      const response = await fetch(
-        "http://localhost:3000/api/v1/migrations",
-        {
-          method: "POST",
-        },
-      );
+      const response = await fetch("http://localhost:3000/api/v1/migrations", {
+        method: "POST",
+      });
       expect(response.status).toBe(403);
 
       const responseBody = await response.json();

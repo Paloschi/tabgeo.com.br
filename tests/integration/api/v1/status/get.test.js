@@ -22,7 +22,6 @@ describe("GET /api/v1/status", () => {
 
   describe("Privileged user", () => {
     test("Retrieving current system status", async () => {
-
       const createdUser = await orchestrator.createUser();
       const activatedUser = await orchestrator.activateUser(createdUser);
       await orchestrator.addFeatureToUser(createdUser, ["read:status:all"]);

@@ -129,7 +129,8 @@ function filterOutput(user, feature, resource) {
     };
 
     if (can(user, "read:status:all")) {
-      output.dependencies.database.version = resource.dependencies.database.version;
+      output.dependencies.database.version =
+        resource.dependencies.database.version;
     }
 
     return output;
@@ -147,7 +148,8 @@ function validateUser(user) {
 function validateFeature(feature) {
   if (!availableFeatures.includes(feature)) {
     throw new InternalServerError({
-      cause: "Is necessary to provide a valid `feature` into model authorization.",
+      cause:
+        "Is necessary to provide a valid `feature` into model authorization.",
     });
   }
 }
@@ -155,7 +157,8 @@ function validateFeature(feature) {
 function validateResource(resource) {
   if (!resource) {
     throw new InternalServerError({
-      cause: "Is necessary to provide a valid `resource` into model authorization.",
+      cause:
+        "Is necessary to provide a valid `resource` into model authorization.",
     });
   }
 }

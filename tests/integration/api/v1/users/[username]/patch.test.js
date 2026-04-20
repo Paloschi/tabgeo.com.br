@@ -325,9 +325,12 @@ describe("PATCH /api/v1/users/[username]", () => {
   describe("Privileged user", () => {
     test("With `update:user:others` targeting `defaultUser`", async () => {
       const privilegedUser = await orchestrator.createUser();
-      const activatedPrivilegedUser = await orchestrator.activateUser(privilegedUser);
+      const activatedPrivilegedUser =
+        await orchestrator.activateUser(privilegedUser);
 
-      await orchestrator.addFeatureToUser(privilegedUser, ["update:user:others"]);
+      await orchestrator.addFeatureToUser(privilegedUser, [
+        "update:user:others",
+      ]);
 
       const privilegedUserSession = await orchestrator.createSession(
         activatedPrivilegedUser.id,
@@ -366,6 +369,5 @@ describe("PATCH /api/v1/users/[username]", () => {
       expect(Date.parse(responseBody.updated_at)).not.toBeNaN();
       expect(responseBody.updated_at > responseBody.created_at).toBe(true);
     });
-
   });
 });
