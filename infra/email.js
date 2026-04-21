@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import { ServiceError } from "infra/errors.js";
 
 const transporter = nodemailer.createTransport({
   host: process.env.EMAIL_SMTP_HOST,
@@ -11,8 +12,16 @@ const transporter = nodemailer.createTransport({
 });
 
 async function send(mailOptions) {
-  const info = await transporter.sendMail(mailOptions);
-  return info;
+  try {
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    throw new ServiceError({
+      message: "Failed to send email.",
+      action: "Verify if the email service is available.",
+      cause: error,
+      context: mailOptions,
+    });
+  }
 }
 
 const email = {
