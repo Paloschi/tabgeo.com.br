@@ -27,8 +27,7 @@ describe("GET /api/v1/users/[username]", () => {
       expect(responseBody2).toEqual({
         id: responseBody2.id,
         username: "SameCase",
-        email: "samecase@tabgeo.com.br",
-        password: responseBody2.password,
+        features: ["read:activation_token"],
         created_at: responseBody2.created_at,
         updated_at: responseBody2.updated_at,
       });
@@ -56,8 +55,7 @@ describe("GET /api/v1/users/[username]", () => {
       expect(responseBody2).toEqual({
         id: responseBody2.id,
         username: "DifferentCase",
-        email: "differentcase@tabgeo.com.br",
-        password: responseBody2.password,
+        features: ["read:activation_token"],
         created_at: responseBody2.created_at,
         updated_at: responseBody2.updated_at,
       });

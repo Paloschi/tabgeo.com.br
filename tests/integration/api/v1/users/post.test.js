@@ -11,7 +11,7 @@ beforeAll(async () => {
 
 describe("POST /api/v1/users", () => {
   describe("Anonymous user", () => {
-    test("With unic and valid data", async () => {
+    test("With unique and valid data", async () => {
       const response = await fetch("http://localhost:3000/api/v1/users", {
         method: "POST",
         headers: {
@@ -19,8 +19,8 @@ describe("POST /api/v1/users", () => {
         },
         body: JSON.stringify({
           username: "rennanpaloschi",
-          email: "contato@tabgeo.com.br",
           password: "senha123",
+          email: "contato@tabgeo.com.br",
         }),
       });
 
@@ -31,7 +31,7 @@ describe("POST /api/v1/users", () => {
       expect(responseBody).toEqual({
         id: responseBody.id,
         username: "rennanpaloschi",
-        email: "contato@tabgeo.com.br",
+        features: ["read:activation_token"],
         password: responseBody.password,
         created_at: responseBody.created_at,
         updated_at: responseBody.updated_at,
@@ -132,6 +132,38 @@ describe("POST /api/v1/users", () => {
         message: "The username is already in use.",
         action: "Try a different username to this operation.",
         statusCode: 400,
+      });
+    });
+  });
+
+  describe("Default user", () => {
+    test("With unique and valid data", async () => {
+      const user1 = await orchestrator.createUser();
+      await orchestrator.activateUser(user1);
+      const user1SessionObject = await orchestrator.createSession(user1.id);
+
+      const user2Response = await fetch("http://localhost:3000/api/v1/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: `session_id=${user1SessionObject.token}`,
+        },
+        body: JSON.stringify({
+          username: "user2",
+          email: "user2@tabgeo.com.br",
+          password: "senha123",
+        }),
+      });
+
+      expect(user2Response.status).toBe(403);
+
+      const responseBody = await user2Response.json();
+
+      expect(responseBody).toEqual({
+        name: "ForbiddenError",
+        message: "You are not authorized to request this resource.",
+        action: "verify if your user has the required feature create:user.",
+        statusCode: 403,
       });
     });
   });
