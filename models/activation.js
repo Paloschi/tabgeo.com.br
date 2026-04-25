@@ -60,7 +60,7 @@ async function findOneByValidId(id) {
 
 async function sendEmailToUser(user, activation) {
   await email.send({
-    from: "TabGeo <contato@tabgeo.com.br>",
+    from: "TabGeo <naoresponda@alerts.tabgeo.com.br>",
     to: user.email,
     subject: "Ative seu cadastro no TabGeo",
     text: `${user.username}, clique no link abaixo para ativar seu cadastro no TabGeo:
