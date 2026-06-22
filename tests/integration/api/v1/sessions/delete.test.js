@@ -1,6 +1,7 @@
 import setCookieParser from "set-cookie-parser";
 import orchestrator from "tests/orchestrator.js";
 import session from "models/session.js";
+import webserver from "infra/webserver.js";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -14,7 +15,7 @@ describe("DELETE /api/v1/sessions", () => {
       const nonexistentSessionToken =
         "6345a698d6f96faecbc1e07fba999f94e836bcc67cf64b719cbf1b2c9752b563b3a776cab534b73a0258954f2cdd852b";
 
-      const response = await fetch("http://localhost:3000/api/v1/sessions", {
+      const response = await fetch(`${webserver.origin}/api/v1/sessions`, {
         method: "DELETE",
         headers: {
           Cookie: `session_id=${nonexistentSessionToken}`,
@@ -49,7 +50,7 @@ describe("DELETE /api/v1/sessions", () => {
 
       jest.useRealTimers();
 
-      const response = await fetch("http://localhost:3000/api/v1/sessions", {
+      const response = await fetch(`${webserver.origin}/api/v1/sessions`, {
         method: "DELETE",
         headers: {
           Cookie: `session_id=${expiredSessionObject.token}`,
@@ -77,7 +78,7 @@ describe("DELETE /api/v1/sessions", () => {
 
       const sessionObject = await orchestrator.createSession(createdUser.id);
 
-      const response = await fetch("http://localhost:3000/api/v1/sessions", {
+      const response = await fetch(`${webserver.origin}/api/v1/sessions`, {
         method: "DELETE",
         headers: {
           Cookie: `session_id=${sessionObject.token}`,
@@ -121,7 +122,7 @@ describe("DELETE /api/v1/sessions", () => {
 
       // Double check assertions on api/v1/user endpoint
       const doubleCheckResponse = await fetch(
-        "http://localhost:3000/api/v1/user",
+        `${webserver.origin}/api/v1/user`,
         {
           headers: {
             Cookie: `session_id=${sessionObject.token}`,
