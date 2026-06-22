@@ -11,7 +11,7 @@ beforeAll(async () => {
 
 describe("PATCH /api/v1/activations/[token_id]", () => {
   describe("Anonymous user", () => {
-    test("With nonexistent token", async () => {
+    test("With nonexistent `token`", async () => {
       const response = await fetch(
         "http://localhost:3000/api/v1/activations/006c3cdb-ca4b-4eee-a534-cb57d275c02f",
         {
@@ -31,7 +31,7 @@ describe("PATCH /api/v1/activations/[token_id]", () => {
       });
     });
 
-    test("With expired token", async () => {
+    test("With expired `token`", async () => {
       jest.useFakeTimers({
         now: new Date(Date.now() - activation.EXPIRATION_IN_MILLISECONDS),
       });
@@ -63,7 +63,7 @@ describe("PATCH /api/v1/activations/[token_id]", () => {
       });
     });
 
-    test("With already used token", async () => {
+    test("With already used `token`", async () => {
       const createdUser = await orchestrator.createUser();
       const activationToken = await activation.create(createdUser.id);
 
@@ -95,7 +95,7 @@ describe("PATCH /api/v1/activations/[token_id]", () => {
       });
     });
 
-    test("With valid token", async () => {
+    test("With valid `token`", async () => {
       const createdUser = await orchestrator.createUser();
       const activationToken = await activation.create(createdUser.id);
 
@@ -145,7 +145,7 @@ describe("PATCH /api/v1/activations/[token_id]", () => {
       ]);
     });
 
-    test("With valid token but already activated user", async () => {
+    test("With valid `token` but already activated `user`", async () => {
       const createdUser = await orchestrator.createUser();
       await orchestrator.activateUser(createdUser);
       const activationToken = await activation.create(createdUser.id);
@@ -171,7 +171,7 @@ describe("PATCH /api/v1/activations/[token_id]", () => {
   });
 
   describe("Default user", () => {
-    test("With valid token, but already logged user", async () => {
+    test("With valid `token`, but already logged `user`", async () => {
       const user1 = await orchestrator.createUser();
       await orchestrator.activateUser(user1);
       const user1SessionObject = await orchestrator.createSession(user1.id);

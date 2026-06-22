@@ -10,7 +10,7 @@ beforeAll(async () => {
 
 describe("DELETE /api/v1/sessions", () => {
   describe("Default user", () => {
-    test("With nonexistent session", async () => {
+    test("With nonexistent `session`", async () => {
       const nonexistentSessionToken =
         "6345a698d6f96faecbc1e07fba999f94e836bcc67cf64b719cbf1b2c9752b563b3a776cab534b73a0258954f2cdd852b";
 
@@ -33,7 +33,7 @@ describe("DELETE /api/v1/sessions", () => {
       });
     });
 
-    test("With expired session", async () => {
+    test("With expired `session`", async () => {
       jest.useFakeTimers({
         now: new Date(Date.now() - (session.EXPIRATION_IN_MILLISECONDS + 1000)),
         toFake: ["Date"],
@@ -68,7 +68,7 @@ describe("DELETE /api/v1/sessions", () => {
       });
     });
 
-    test("With valid session", async () => {
+    test("With valid `session`", async () => {
       jest.useFakeTimers({
         now: new Date(Date.now() - session.EXPIRATION_IN_MILLISECONDS + 1000), // One second to expire
       });

@@ -15,7 +15,7 @@ describe("Use case: Registration Flow (all succcessful)", () => {
   let activationTokenId;
   let createSessionsResponseBody;
 
-  test("Create user account", async () => {
+  test("Create `user` account", async () => {
     const createUserResponse = await fetch(
       "http://localhost:3000/api/v1/users",
       {
@@ -44,7 +44,7 @@ describe("Use case: Registration Flow (all succcessful)", () => {
     });
   });
 
-  test("Receive activation email", async () => {
+  test("Receive activation `email`", async () => {
     const lastEmail = await orchestrator.getLastEmail();
 
     expect(lastEmail.sender).toBe("<naoresponda@alerts.tabgeo.com.br>");
@@ -110,7 +110,7 @@ describe("Use case: Registration Flow (all succcessful)", () => {
     expect(createSessionsResponseBody.user_id).toBe(createUserResponseBody.id);
   });
 
-  test("Get user information", async () => {
+  test("Get `user` information", async () => {
     const userFromDb = await user.findOneById(createUserResponseBody.id);
 
     const getUserResponse = await fetch("http://localhost:3000/api/v1/user", {
