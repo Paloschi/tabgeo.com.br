@@ -186,8 +186,7 @@ describe("PATCH /api/v1/users/[username]", () => {
     test("With unique `username`", async () => {
       const createdUser = await orchestrator.createUser();
       const activatedUser = await orchestrator.activateUser(createdUser);
-      const userSessionObject =
-        await orchestrator.createSession(activatedUser);
+      const userSessionObject = await orchestrator.createSession(activatedUser);
 
       const response = await fetch(
         `${webserver.origin}/api/v1/users/${createdUser.username}`,
@@ -225,8 +224,7 @@ describe("PATCH /api/v1/users/[username]", () => {
     test("With unique `email`", async () => {
       const createdUser = await orchestrator.createUser();
       const activatedUser = await orchestrator.activateUser(createdUser);
-      const userSessionObject =
-        await orchestrator.createSession(activatedUser);
+      const userSessionObject = await orchestrator.createSession(activatedUser);
 
       const response = await fetch(
         `${webserver.origin}/api/v1/users/${createdUser.username}`,
@@ -270,8 +268,7 @@ describe("PATCH /api/v1/users/[username]", () => {
       });
 
       const activatedUser = await orchestrator.activateUser(createdUser);
-      const userSessionObject =
-        await orchestrator.createSession(activatedUser);
+      const userSessionObject = await orchestrator.createSession(activatedUser);
 
       const response = await fetch(
         `${webserver.origin}/api/v1/users/${createdUser.username}`,

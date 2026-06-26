@@ -121,8 +121,6 @@ describe("POST /api/v1/sessions", () => {
 
       const responseBody = await response.json();
 
-      console.log(responseBody);
-
       expect(responseBody).toEqual({
         id: responseBody.id,
         token: responseBody.token,
@@ -133,25 +131,30 @@ describe("POST /api/v1/sessions", () => {
       });
 
       expect(uuidVersion(responseBody.id)).toBe(4);
+      expect(Date.parse(responseBody.expires_at)).not.toBeNaN();
       expect(Date.parse(responseBody.created_at)).not.toBeNaN();
       expect(Date.parse(responseBody.updated_at)).not.toBeNaN();
-      expect(Date.parse(responseBody.expires_at)).not.toBeNaN();
-      expect(responseBody.expires_at > responseBody.created_at).toBe(true);
+
+      // `expires_at` is calculated in the application before persistence.
+      // `created_at` is calculated later in the database layer.
+      // So the actual time between the two dates may be slightly less than
+      // the configured expiration and not match exactly 30 days in
+      // milliseconds if calculated only as `expires_at` - `created_at`.
+      // The idea is to ensure that at the moment `expires_at` is greater than
+      // `created_at`, and also that there may be up to 5 seconds difference
+      // between the two dates to cover the case of the database suffering
+      // unexpected load during tests.
 
       const expiresAt = new Date(responseBody.expires_at);
       const createdAt = new Date(responseBody.created_at);
 
-      expiresAt.setMilliseconds(0);
-      expiresAt.setSeconds(0);
-      createdAt.setMilliseconds(0);
-      createdAt.setSeconds(0);
+      expect(expiresAt >= createdAt).toBe(true);
 
-      const expirationDelta = expiresAt - createdAt;
-      const expirationToleranceInMilliseconds = 60 * 1000;
+      const actualLifetimeInMilliseconds = expiresAt - createdAt;
+      const lifetimeDifferenceInMilliseconds =
+        session.EXPIRATION_IN_MILLISECONDS - actualLifetimeInMilliseconds;
 
-      expect(
-        Math.abs(expirationDelta - session.EXPIRATION_IN_MILLISECONDS),
-      ).toBeLessThanOrEqual(expirationToleranceInMilliseconds);
+      expect(lifetimeDifferenceInMilliseconds).toBeLessThanOrEqual(5000);
 
       const parsedSetCookie = setCookieParser(response, {
         map: true,

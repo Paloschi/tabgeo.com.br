@@ -46,6 +46,5 @@ async function patchHandler(request, response) {
     userUpdated,
   );
 
-  console.log(secureOutputValues);
   return response.status(200).json(secureOutputValues);
 }
