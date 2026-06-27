@@ -4,12 +4,10 @@ import user from "models/user.js";
 import session from "models/session.js";
 import authorization from "models/authorization.js";
 
-const router = createRouter();
-
-router.use(controller.injectAnonymousOrUser);
-router.get(controller.canRequest("read:session"), getHandler);
-
-export default router.handler(controller.errorHandlers);
+export default createRouter()
+  .use(controller.injectAnonymousOrUser)
+  .get(controller.canRequest("read:session"), getHandler)
+  .handler(controller.errorHandlers);
 
 async function getHandler(request, response) {
   const userTryingToGet = request.context.user;
@@ -19,7 +17,7 @@ async function getHandler(request, response) {
   const renewedSessionObject = await session.renew(sessionObject.id);
   const userFound = await user.findOneById(sessionObject.user_id);
 
-  await controller.setSessionCookie(renewedSessionObject.token, response);
+  controller.setSessionCookie(renewedSessionObject.token, response);
   response.setHeader(
     "Cache-Control",
     "no-store, no-cache, max-age=0, must-revalidate",

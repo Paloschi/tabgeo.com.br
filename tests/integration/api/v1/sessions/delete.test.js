@@ -1,6 +1,7 @@
 import setCookieParser from "set-cookie-parser";
 import orchestrator from "tests/orchestrator.js";
 import session from "models/session.js";
+import webserver from "infra/webserver.js";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -10,11 +11,11 @@ beforeAll(async () => {
 
 describe("DELETE /api/v1/sessions", () => {
   describe("Default user", () => {
-    test("With nonexistent session", async () => {
+    test("With nonexistent `session`", async () => {
       const nonexistentSessionToken =
         "6345a698d6f96faecbc1e07fba999f94e836bcc67cf64b719cbf1b2c9752b563b3a776cab534b73a0258954f2cdd852b";
 
-      const response = await fetch("http://localhost:3000/api/v1/sessions", {
+      const response = await fetch(`${webserver.origin}/api/v1/sessions`, {
         method: "DELETE",
         headers: {
           Cookie: `session_id=${nonexistentSessionToken}`,
@@ -33,7 +34,7 @@ describe("DELETE /api/v1/sessions", () => {
       });
     });
 
-    test("With expired session", async () => {
+    test("With expired `session`", async () => {
       jest.useFakeTimers({
         now: new Date(Date.now() - (session.EXPIRATION_IN_MILLISECONDS + 1000)),
         toFake: ["Date"],
@@ -43,13 +44,12 @@ describe("DELETE /api/v1/sessions", () => {
         username: "UserWithExpiredSession",
       });
 
-      const expiredSessionObject = await orchestrator.createSession(
-        createdUser.id,
-      );
+      const expiredSessionObject =
+        await orchestrator.createSession(createdUser);
 
       jest.useRealTimers();
 
-      const response = await fetch("http://localhost:3000/api/v1/sessions", {
+      const response = await fetch(`${webserver.origin}/api/v1/sessions`, {
         method: "DELETE",
         headers: {
           Cookie: `session_id=${expiredSessionObject.token}`,
@@ -68,16 +68,16 @@ describe("DELETE /api/v1/sessions", () => {
       });
     });
 
-    test("With valid session", async () => {
+    test("With valid `session`", async () => {
       jest.useFakeTimers({
         now: new Date(Date.now() - session.EXPIRATION_IN_MILLISECONDS + 1000), // One second to expire
       });
 
       const createdUser = await orchestrator.createUser();
 
-      const sessionObject = await orchestrator.createSession(createdUser.id);
+      const sessionObject = await orchestrator.createSession(createdUser);
 
-      const response = await fetch("http://localhost:3000/api/v1/sessions", {
+      const response = await fetch(`${webserver.origin}/api/v1/sessions`, {
         method: "DELETE",
         headers: {
           Cookie: `session_id=${sessionObject.token}`,
@@ -117,11 +117,12 @@ describe("DELETE /api/v1/sessions", () => {
         maxAge: -1,
         path: "/",
         httpOnly: true,
+        sameSite: "Lax",
       });
 
       // Double check assertions on api/v1/user endpoint
       const doubleCheckResponse = await fetch(
-        "http://localhost:3000/api/v1/user",
+        `${webserver.origin}/api/v1/user`,
         {
           headers: {
             Cookie: `session_id=${sessionObject.token}`,

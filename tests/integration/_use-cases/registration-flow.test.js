@@ -15,21 +15,18 @@ describe("Use case: Registration Flow (all succcessful)", () => {
   let activationTokenId;
   let createSessionsResponseBody;
 
-  test("Create user account", async () => {
-    const createUserResponse = await fetch(
-      "http://localhost:3000/api/v1/users",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: "RegistrationFlow",
-          email: "registration.flow@tabgeo.com.br",
-          password: "senha123",
-        }),
+  test("Create `user` account", async () => {
+    const createUserResponse = await fetch(`${webserver.origin}/api/v1/users`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      body: JSON.stringify({
+        username: "RegistrationFlow",
+        email: "registration.flow@tabgeo.com.br",
+        password: "senha123",
+      }),
+    });
 
     expect(createUserResponse.status).toBe(201);
 
@@ -44,7 +41,7 @@ describe("Use case: Registration Flow (all succcessful)", () => {
     });
   });
 
-  test("Receive activation email", async () => {
+  test("Receive activation `email`", async () => {
     const lastEmail = await orchestrator.getLastEmail();
 
     expect(lastEmail.sender).toBe("<naoresponda@alerts.tabgeo.com.br>");
@@ -65,7 +62,7 @@ describe("Use case: Registration Flow (all succcessful)", () => {
 
   test("Activate account", async () => {
     const activationResponse = await fetch(
-      `http://localhost:3000/api/v1/activations/${activationTokenId}`,
+      `${webserver.origin}/api/v1/activations/${activationTokenId}`,
       {
         method: "PATCH",
         headers: {
@@ -90,7 +87,7 @@ describe("Use case: Registration Flow (all succcessful)", () => {
 
   test("Login to account", async () => {
     const createSessionsResponse = await fetch(
-      "http://localhost:3000/api/v1/sessions",
+      `${webserver.origin}/api/v1/sessions`,
       {
         method: "POST",
         headers: {
@@ -110,10 +107,10 @@ describe("Use case: Registration Flow (all succcessful)", () => {
     expect(createSessionsResponseBody.user_id).toBe(createUserResponseBody.id);
   });
 
-  test("Get user information", async () => {
+  test("Get `user` information", async () => {
     const userFromDb = await user.findOneById(createUserResponseBody.id);
 
-    const getUserResponse = await fetch("http://localhost:3000/api/v1/user", {
+    const getUserResponse = await fetch(`${webserver.origin}/api/v1/user`, {
       headers: {
         Cookie: `session_id=${createSessionsResponseBody.token}`,
       },

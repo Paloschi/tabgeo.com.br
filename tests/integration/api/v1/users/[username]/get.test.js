@@ -1,5 +1,6 @@
 import orchestrator from "tests/orchestrator.js";
 import { version as uuidVersion } from "uuid";
+import webserver from "infra/webserver.js";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -9,7 +10,7 @@ beforeAll(async () => {
 
 describe("GET /api/v1/users/[username]", () => {
   describe("Anonymous user", () => {
-    test("With exact case match", async () => {
+    test("With exact case match on `username`", async () => {
       await orchestrator.createUser({
         username: "SameCase",
         email: "samecase@tabgeo.com.br",
@@ -17,7 +18,7 @@ describe("GET /api/v1/users/[username]", () => {
       });
 
       const response2 = await fetch(
-        "http://localhost:3000/api/v1/users/SameCase",
+        `${webserver.origin}/api/v1/users/SameCase`,
       );
 
       expect(response2.status).toBe(200);
@@ -37,7 +38,7 @@ describe("GET /api/v1/users/[username]", () => {
       expect(Date.parse(responseBody2.updated_at)).not.toBeNaN();
     });
 
-    test("With case mismatch", async () => {
+    test("With case mismatch on `username`", async () => {
       await orchestrator.createUser({
         username: "DifferentCase",
         email: "differentcase@tabgeo.com.br",
@@ -45,7 +46,7 @@ describe("GET /api/v1/users/[username]", () => {
       });
 
       const response2 = await fetch(
-        "http://localhost:3000/api/v1/users/differentcase",
+        `${webserver.origin}/api/v1/users/differentcase`,
       );
 
       expect(response2.status).toBe(200);
@@ -65,9 +66,9 @@ describe("GET /api/v1/users/[username]", () => {
       expect(Date.parse(responseBody2.updated_at)).not.toBeNaN();
     });
 
-    test("With nonexistent username", async () => {
+    test("With nonexistent `username`", async () => {
       const response = await fetch(
-        "http://localhost:3000/api/v1/users/nonexistent",
+        `${webserver.origin}/api/v1/users/nonexistent`,
       );
 
       const responseBody = await response.json();

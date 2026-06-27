@@ -6,7 +6,7 @@ beforeAll(async () => {
 });
 
 describe("infra/email.js", () => {
-  test("send", async () => {
+  test("`send`", async () => {
     await orchestrator.deleteAllEmails();
 
     await email.send({
