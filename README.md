@@ -41,17 +41,17 @@ sessions, feature-based authorization, email activation, and PostgreSQL
 migrations. Local services run in Docker; CI runs Prettier, ESLint,
 Commitlint, and Jest on every pull request.
 
-| Layer        | Stack                                                         |
-| ------------ | ------------------------------------------------------------- |
-| Language     | **Node.js 24**                                                |
-| App          | **Next.js** 16 · **React** 19 · **SWR**                       |
-| API          | **next-connect** routers + `infra/controller.js`              |
-| Auth         | Cookie `session_id` (httpOnly, SameSite=Lax) · **bcryptjs**   |
-| Access       | Feature flags on `users.features` (`models/authorization.js`) |
-| Database     | **PostgreSQL** 16 · **node-pg-migrate**                       |
-| Email        | **Nodemailer** → Mailcatcher in development                   |
-| Tests        | **Jest** 30 — integration against a live Next + Postgres      |
-| Quality      | Prettier · ESLint · Husky · Commitlint · Commitizen           |
+| Layer    | Stack                                                         |
+| -------- | ------------------------------------------------------------- |
+| Language | **Node.js 24**                                                |
+| App      | **Next.js** 16 · **React** 19 · **SWR**                       |
+| API      | **next-connect** routers + `infra/controller.js`              |
+| Auth     | Cookie `session_id` (httpOnly, SameSite=Lax) · **bcryptjs**   |
+| Access   | Feature flags on `users.features` (`models/authorization.js`) |
+| Database | **PostgreSQL** 16 · **node-pg-migrate**                       |
+| Email    | **Nodemailer** → Mailcatcher in development                   |
+| Tests    | **Jest** 30 — integration against a live Next + Postgres      |
+| Quality  | Prettier · ESLint · Husky · Commitlint · Commitizen           |
 
 ---
 
@@ -76,12 +76,12 @@ npm run dev
 pending migrations, then boots Next.js. Ctrl+C stops the app **and** the
 containers.
 
-| Service      | URL                         |
-| ------------ | --------------------------- |
-| App          | http://localhost:3000       |
-| Status page  | http://localhost:3000/status |
-| Mailcatcher  | http://localhost:1080       |
-| Postgres     | `localhost:5432`            |
+| Service     | URL                          |
+| ----------- | ---------------------------- |
+| App         | http://localhost:3000        |
+| Status page | http://localhost:3000/status |
+| Mailcatcher | http://localhost:1080        |
+| Postgres    | `localhost:5432`             |
 
 Local credentials live in `.env.development` (committed for the study
 project — not for production).
@@ -90,25 +90,25 @@ project — not for production).
 
 ## Scripts
 
-| Command | Purpose |
-| ------- | ------- |
-| `npm run dev` | Compose up → wait Postgres → migrate → `next dev` |
-| `npm test` | Compose up → Next + Jest in band → compose stop |
-| `npm run test:watch` | Jest watch (expects services already up) |
-| `npm run services:up` | Start Postgres and Mailcatcher |
-| `npm run services:stop` | Stop containers (keep volumes) |
-| `npm run services:down` | Remove containers |
-| `npm run migrations:create` | Create a new migration in `infra/migrations` |
-| `npm run migrations:up` | Apply pending migrations |
-| `npm run lint:prettier:check` | Prettier check |
-| `npm run lint:eslint:check` | ESLint (`--max-warnings 0`) |
-| `npm run commit` | Commitizen (conventional commits) |
+| Command                       | Purpose                                           |
+| ----------------------------- | ------------------------------------------------- |
+| `npm run dev`                 | Compose up → wait Postgres → migrate → `next dev` |
+| `npm test`                    | Compose up → Next + Jest in band → compose stop   |
+| `npm run test:watch`          | Jest watch (expects services already up)          |
+| `npm run services:up`         | Start Postgres and Mailcatcher                    |
+| `npm run services:stop`       | Stop containers (keep volumes)                    |
+| `npm run services:down`       | Remove containers                                 |
+| `npm run migrations:create`   | Create a new migration in `infra/migrations`      |
+| `npm run migrations:up`       | Apply pending migrations                          |
+| `npm run lint:prettier:check` | Prettier check                                    |
+| `npm run lint:eslint:check`   | ESLint (`--max-warnings 0`)                       |
+| `npm run commit`              | Commitizen (conventional commits)                 |
 
 ---
 
 ## Project structure
 
-```
+```text
 tabgeo.com.br/
 ├── .github/workflows/       # PR CI: lint + tests
 ├── infra/
@@ -134,22 +134,22 @@ tabgeo.com.br/
 
 ### Where to look first
 
-| Concern              | Location                                      |
-| -------------------- | --------------------------------------------- |
-| Request plumbing     | `infra/controller.js`                         |
-| Typed errors         | `infra/errors.js`                             |
-| Users / passwords    | `models/user.js`, `models/password.js`        |
-| Sessions             | `models/session.js`                           |
-| Email activation     | `models/activation.js`, `infra/email.js`      |
-| Feature authorization| `models/authorization.js`                     |
-| Migrations           | `models/migrator.js`, `infra/migrations/`     |
-| Test helpers         | `tests/orchestrator.js`                       |
+| Concern               | Location                                  |
+| --------------------- | ----------------------------------------- |
+| Request plumbing      | `infra/controller.js`                     |
+| Typed errors          | `infra/errors.js`                         |
+| Users / passwords     | `models/user.js`, `models/password.js`    |
+| Sessions              | `models/session.js`                       |
+| Email activation      | `models/activation.js`, `infra/email.js`  |
+| Feature authorization | `models/authorization.js`                 |
+| Migrations            | `models/migrator.js`, `infra/migrations/` |
+| Test helpers          | `tests/orchestrator.js`                   |
 
 ---
 
 ## Architecture
 
-```
+```text
 browser  →  pages/  (React)
                  ↓
          pages/api/v1/*  (next-connect)
@@ -174,15 +174,15 @@ browser  →  pages/  (React)
 
 ## HTTP API
 
-| Method | Path | Role |
-| ------ | ---- | ---- |
-| `POST` | `/api/v1/users` | Register + send activation email |
-| `GET` / `PATCH` | `/api/v1/users/[username]` | Read / update a user |
-| `GET` | `/api/v1/user` | Current session user |
-| `POST` / `DELETE` | `/api/v1/sessions` | Login / logout |
-| `PATCH` | `/api/v1/activations/[token_id]` | Activate account |
-| `GET` / `POST` | `/api/v1/migrations` | List / run migrations |
-| `GET` | `/api/v1/status` | App + Postgres health |
+| Method            | Path                             | Role                             |
+| ----------------- | -------------------------------- | -------------------------------- |
+| `POST`            | `/api/v1/users`                  | Register + send activation email |
+| `GET` / `PATCH`   | `/api/v1/users/[username]`       | Read / update a user             |
+| `GET`             | `/api/v1/user`                   | Current session user             |
+| `POST` / `DELETE` | `/api/v1/sessions`               | Login / logout                   |
+| `PATCH`           | `/api/v1/activations/[token_id]` | Activate account                 |
+| `GET` / `POST`    | `/api/v1/migrations`             | List / run migrations            |
+| `GET`             | `/api/v1/status`                 | App + Postgres health            |
 
 Wrong methods return `405` from `controller.onNoMatchHandler`. Domain
 failures (`ValidationError`, `UnauthorizedError`, `ForbiddenError`, …) map
@@ -202,17 +202,17 @@ Jest talks to a real Next.js server, Postgres, and Mailcatcher.
 `tests/orchestrator.js` waits for services, resets the schema, runs
 migrations, and seeds users / sessions / activation tokens.
 
-| Area | What it covers |
-| ---- | -------------- |
-| `tests/integration/api/v1/users/` | Create, read, patch |
-| `tests/integration/api/v1/sessions/` | Login and logout |
-| `tests/integration/api/v1/user/` | Authenticated current user |
-| `tests/integration/api/v1/activation/` | Email token activation |
-| `tests/integration/api/v1/migrations/` | Dry-run vs apply |
-| `tests/integration/api/v1/status/` | Health payload |
-| `tests/integration/_use-cases/` | Full registration flow |
-| `tests/integration/infra/email.test.js` | Mailcatcher delivery |
-| `tests/unit/models/authorization.test.js` | Feature matrix |
+| Area                                      | What it covers             |
+| ----------------------------------------- | -------------------------- |
+| `tests/integration/api/v1/users/`         | Create, read, patch        |
+| `tests/integration/api/v1/sessions/`      | Login and logout           |
+| `tests/integration/api/v1/user/`          | Authenticated current user |
+| `tests/integration/api/v1/activation/`    | Email token activation     |
+| `tests/integration/api/v1/migrations/`    | Dry-run vs apply           |
+| `tests/integration/api/v1/status/`        | Health payload             |
+| `tests/integration/_use-cases/`           | Full registration flow     |
+| `tests/integration/infra/email.test.js`   | Mailcatcher delivery       |
+| `tests/unit/models/authorization.test.js` | Feature matrix             |
 
 CI (GitHub Actions) runs on every **pull request**: Ubuntu × Node 24 —
 linting (Prettier, ESLint, Commitlint) and `npm test`.
